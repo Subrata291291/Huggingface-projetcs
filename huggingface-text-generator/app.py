@@ -11,23 +11,23 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 MODEL_ID = "openai/gpt-oss-20b"
 
 
-# -------------------- AI GENERATION --------------------
+# =========================
+# AI TEXT GENERATION
+# =========================
 
 def generate_text(prompt):
     if not prompt or not prompt.strip():
-        return "✍️ Please enter a prompt to get started."
+        return "⚠️ Please enter a prompt before generating text."
 
-    api_key = os.getenv("GROQ_API_KEY")
-
-    if not api_key:
+    if not GROQ_API_KEY:
         return (
             "⚠️ **Configuration Error**\n\n"
-            "The API key is missing. Please configure "
-            "`GROQ_API_KEY` in your hosting environment."
+            "GROQ_API_KEY is missing. Add it to your local "
+            ".env file or your Render Environment Variables."
         )
 
     try:
-        client = Groq(api_key=api_key)
+        client = Groq(api_key=GROQ_API_KEY)
 
         response = client.chat.completions.create(
             model=MODEL_ID,
@@ -35,13 +35,13 @@ def generate_text(prompt):
                 {
                     "role": "system",
                     "content": (
-                        "You are a premium AI writing assistant. "
-                        "Answer in the same language as the user. "
-                        "Support Bengali, English, and other languages. "
-                        "Use clean Markdown formatting with headings, "
-                        "bold text, lists, and tables when useful. "
-                        "Never output HTML tags. Follow the user's "
-                        "requested topic, length, tone, and format."
+                        "You are an expert AI writing assistant. "
+                        "Answer in the same language as the user's prompt. "
+                        "Write useful, accurate, well-structured content. "
+                        "Use descriptive headings, paragraphs, bullet points, "
+                        "and Markdown tables when appropriate. "
+                        "Do not put the entire answer inside a code block. "
+                        "Follow the user's requested length and format."
                     ),
                 },
                 {
@@ -49,7 +49,7 @@ def generate_text(prompt):
                     "content": prompt.strip(),
                 },
             ],
-            max_completion_tokens=1500,
+            max_completion_tokens=1800,
             reasoning_effort="low",
             reasoning_format="hidden",
         )
@@ -59,61 +59,107 @@ def generate_text(prompt):
         if answer and answer.strip():
             return answer.strip()
 
-        return "The model returned an empty response. Please try again."
+        return (
+            "The model returned an empty response. "
+            "Please try a shorter or more specific prompt."
+        )
 
     except Exception as error:
-        print(f"Groq API error: {type(error).__name__}: {error}")
+        print(
+            f"Groq API error: {type(error).__name__}: {error}"
+        )
 
         return (
-            "### ⚠️ Generation failed\n\n"
-            "Please try again. If the issue continues, check your "
-            "Groq API key, model availability, usage limits, and "
-            "the application logs."
+            "### Unable to generate a response\n\n"
+            "Please check your API key, model availability, "
+            "rate limits, and Render logs. Try again in a moment."
         )
 
 
-# -------------------- PREMIUM CSS --------------------
+# =========================
+# SAMPLE PROMPTS
+# =========================
+
+def sample_prompt(kind):
+    prompts = {
+        "story": (
+            "বাংলায় সুন্দরবনের একটি বাঘকে নিয়ে "
+            "একটি আকর্ষণীয় ছোট গল্প লেখো।"
+        ),
+        "blog": (
+            "Write a well-structured blog post about "
+            "the cultural importance of Bengali Durga Puja."
+        ),
+        "social": (
+            "বাংলায় দুর্গাপুজো উপলক্ষে একটি আকর্ষণীয় "
+            "Facebook পোস্ট লেখো।"
+        ),
+        "creative": (
+            "Write a creative and inspiring piece about "
+            "turning ordinary ideas into extraordinary achievements."
+        ),
+    }
+
+    return prompts.get(kind, "")
+
+
+def clear_all():
+    return "", ""
+
+
+# =========================
+# PREMIUM UI STYLES
+# =========================
 
 CSS = """
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-
 :root {
     --bg: #090b14;
-    --panel: #111522;
-    --border: rgba(255,255,255,0.09);
-    --muted: #929bb2;
-    --accent: #9b87ff;
+    --panel: #111421;
+    --panel-light: #171a2a;
+    --border: rgba(164, 157, 207, 0.17);
+    --text: #f4f3ff;
+    --muted: #a3a8c2;
+    --purple: #8b5cf6;
+    --purple-light: #b6a0ff;
 }
 
 .gradio-container {
-    max-width: 1440px !important;
+    max-width: 1500px !important;
     margin: auto !important;
     background:
-        radial-gradient(ellipse at 15% 0%, rgba(101,72,220,0.15), transparent 38%),
-        radial-gradient(ellipse at 90% 12%, rgba(44,125,255,0.10), transparent 32%),
+        radial-gradient(
+            ellipse at 10% 0%,
+            rgba(104, 65, 220, 0.13),
+            transparent 40%
+        ),
+        radial-gradient(
+            ellipse at 95% 10%,
+            rgba(29, 78, 216, 0.10),
+            transparent 35%
+        ),
         var(--bg) !important;
-    color: #f5f6ff !important;
-    font-family: 'Inter', sans-serif !important;
+    color: var(--text) !important;
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif;
 }
 
-body {
-    background: var(--bg) !important;
+footer {
+    display: none !important;
 }
 
 #app-shell {
-    max-width: 1220px;
+    max-width: 1380px;
     margin: 0 auto;
-    padding: 18px 22px 30px;
+    padding: 20px 26px 36px;
 }
 
-.topbar {
+#topbar {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    gap: 14px;
-    padding: 15px 20px;
-    margin-bottom: 48px;
-    background: rgba(17,21,34,0.78);
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px 20px;
+    margin-bottom: 30px;
+    background: rgba(18, 21, 37, 0.88);
     border: 1px solid var(--border);
     border-radius: 18px;
     backdrop-filter: blur(18px);
@@ -123,540 +169,700 @@ body {
     display: flex;
     align-items: center;
     gap: 12px;
-    font-weight: 800;
-    letter-spacing: -0.5px;
-    font-size: 18px;
 }
 
 .brand-icon {
-    display: grid;
-    place-items: center;
     width: 42px;
     height: 42px;
+    display: grid;
+    place-items: center;
     border-radius: 13px;
-    background: linear-gradient(135deg, #9d7bff, #536dfe);
-    box-shadow: 0 5px 25px rgba(111,87,255,0.3);
-    font-size: 22px;
+    background: linear-gradient(135deg, #8b5cf6, #5b4ce2);
+    color: white;
+    font-size: 23px;
+    box-shadow: 0 6px 24px rgba(124, 86, 255, 0.30);
 }
 
-.brand-sub {
-    display: block;
-    margin-top: 3px;
-    font-size: 11px;
-    font-weight: 500;
+.brand-name {
+    font-size: 17px;
+    font-weight: 750;
+    letter-spacing: -0.4px;
+}
+
+.brand-caption {
     color: var(--muted);
-    letter-spacing: 0;
+    font-size: 10px;
+    letter-spacing: 1.1px;
+    margin-top: 3px;
 }
 
 .status-pill {
-    padding: 8px 12px;
-    border: 1px solid rgba(77,222,155,0.22);
+    color: #a7f3d0;
+    background: rgba(16, 185, 129, 0.10);
+    border: 1px solid rgba(52, 211, 153, 0.20);
     border-radius: 999px;
-    color: #83e6b5;
-    background: rgba(77,222,155,0.07);
-    font-size: 12px;
+    padding: 8px 12px;
+    font-size: 11px;
     white-space: nowrap;
 }
 
-.hero {
-    max-width: 850px;
-    margin: 0 auto 38px;
+#hero {
     text-align: center;
+    padding: 12px 12px 32px;
 }
 
-.eyebrow {
+.hero-badge {
     display: inline-block;
-    padding: 8px 13px;
-    margin-bottom: 18px;
-    border: 1px solid rgba(157,123,255,0.3);
+    padding: 7px 13px;
+    margin-bottom: 15px;
+    border: 1px solid rgba(167, 139, 250, 0.25);
     border-radius: 999px;
-    color: #c5b6ff;
-    background: rgba(157,123,255,0.08);
-    font-size: 12px;
-    font-weight: 600;
+    background: rgba(139, 92, 246, 0.09);
+    color: #c4b5fd;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
 }
 
-.hero h1 {
-    margin: 0 0 16px;
-    font-size: clamp(34px, 5vw, 58px);
+.hero-title {
+    font-size: clamp(30px, 4.2vw, 53px);
+    font-weight: 850;
     line-height: 1.12;
-    letter-spacing: -2.5px;
-    font-weight: 800;
-    color: #ffffff;
+    letter-spacing: -2px;
+    margin: 0 0 14px;
+    color: #faf9ff;
 }
 
-.gradient-text {
-    background: linear-gradient(100deg, #b8a5ff, #79aaff, #e1a9ff);
+.hero-gradient {
+    background: linear-gradient(
+        100deg,
+        #b9a6ff 0%,
+        #8b8bff 45%,
+        #df9cff 100%
+    );
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
 }
 
-.hero p {
-    max-width: 650px;
+.hero-subtitle {
+    max-width: 660px;
     margin: 0 auto;
-    color: #a4acc0;
-    font-size: 15px;
+    color: var(--muted);
+    font-size: 14px;
     line-height: 1.8;
 }
 
 .feature-row {
     display: flex;
-    flex-wrap: wrap;
     justify-content: center;
-    gap: 10px;
-    margin-top: 22px;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-top: 20px;
 }
 
-.feature {
+.feature-chip {
     padding: 8px 12px;
-    border-radius: 10px;
+    border-radius: 999px;
     border: 1px solid var(--border);
-    background: rgba(255,255,255,0.025);
-    color: #c6cce0;
-    font-size: 12px;
+    background: rgba(255, 255, 255, 0.025);
+    color: #c7c9de;
+    font-size: 11px;
 }
 
-.panel {
-    background: linear-gradient(
-        145deg,
-        rgba(21,26,43,0.97),
-        rgba(14,17,29,0.97)
-    ) !important;
-    border: 1px solid var(--border) !important;
-    border-radius: 20px !important;
-    padding: 24px !important;
-    box-shadow: 0 18px 55px rgba(0,0,0,0.16);
+#workspace {
+    align-items: flex-start !important;
+    gap: 22px !important;
 }
 
-.panel-heading {
-    margin-bottom: 18px;
+/* Sticky left-side editor */
+#prompt-panel {
+    position: sticky !important;
+    top: 14px;
+    align-self: flex-start !important;
+    max-height: calc(100vh - 28px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: #4f4578 transparent;
+    background: rgba(17, 20, 33, 0.94);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 22px !important;
+    box-shadow: 0 18px 60px rgba(0, 0, 0, 0.16);
 }
 
-.panel-heading h3 {
-    margin: 0 0 7px;
-    color: #f5f5ff;
-    font-size: 18px;
-    font-weight: 700;
+#prompt-panel::-webkit-scrollbar {
+    width: 5px;
 }
 
-.panel-heading p {
-    margin: 0;
-    color: var(--muted);
-    font-size: 12px;
-    line-height: 1.7;
-}
-
-.field-label {
-    color: #dce0f2;
-    font-size: 13px;
-    font-weight: 600;
-    margin-bottom: 8px;
-}
-
-#prompt-box textarea {
-    min-height: 185px !important;
-    padding: 17px !important;
-    border: 1px solid rgba(165,145,255,0.2) !important;
-    border-radius: 14px !important;
-    background: #0b0e19 !important;
-    color: #f4f3ff !important;
-    font-size: 14px !important;
-    line-height: 1.8 !important;
-    transition: border-color .2s, box-shadow .2s;
-}
-
-#prompt-box textarea:focus {
-    border-color: #9680ff !important;
-    box-shadow: 0 0 0 3px rgba(150,128,255,0.12) !important;
-}
-
-#prompt-box textarea::placeholder {
-    color: #727c96 !important;
-}
-
-.suggestions-label {
-    margin: 18px 0 10px;
-    color: #a6aec5;
-    font-size: 12px;
-    font-weight: 600;
-}
-
-.suggestion-btn button {
-    min-height: 39px !important;
-    border: 1px solid var(--border) !important;
-    border-radius: 11px !important;
-    background: rgba(255,255,255,0.035) !important;
-    color: #cbd1e7 !important;
-    font-size: 11px !important;
-    font-weight: 500 !important;
-    transition: all .2s ease;
-}
-
-.suggestion-btn button:hover {
-    border-color: rgba(157,123,255,0.6) !important;
-    background: rgba(157,123,255,0.10) !important;
-}
-
-#generate-btn button {
-    min-height: 51px !important;
-    border: none !important;
-    border-radius: 13px !important;
-    background: linear-gradient(105deg, #8b6bff, #5b78ff) !important;
-    color: white !important;
-    font-weight: 700 !important;
-    box-shadow: 0 8px 24px rgba(105,92,255,0.23);
-    transition: transform .2s, box-shadow .2s;
-}
-
-#generate-btn button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 10px 30px rgba(105,92,255,0.36);
-}
-
-#clear-btn button {
-    min-height: 51px !important;
-    border: 1px solid var(--border) !important;
-    border-radius: 13px !important;
-    background: rgba(255,255,255,0.04) !important;
-    color: #d3d7e8 !important;
-    font-weight: 600 !important;
+#prompt-panel::-webkit-scrollbar-thumb {
+    background: #4f4578;
+    border-radius: 99px;
 }
 
 #result-panel {
-    min-height: 420px;
+    min-width: 0;
+    align-self: flex-start !important;
+    background: rgba(17, 20, 33, 0.80);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 22px !important;
 }
 
-#result-panel .prose {
-    color: #dce2f5 !important;
-    font-size: 14px;
-    line-height: 1.85;
-    overflow-wrap: anywhere;
+.section-eyebrow {
+    color: #b9a4ff;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 9px;
 }
 
-#result-panel .prose h1,
-#result-panel .prose h2,
-#result-panel .prose h3 {
-    color: #ffffff !important;
-    letter-spacing: -0.4px;
+.section-title {
+    font-size: 21px;
+    font-weight: 750;
+    letter-spacing: -0.6px;
+    margin: 0 0 8px;
+    color: #f5f3ff;
 }
 
-#result-panel .prose h2 {
-    padding-bottom: 9px;
+.section-description {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.7;
+    margin-bottom: 22px;
+}
+
+#prompt-input textarea {
+    min-height: 180px !important;
+    background: #0c0f1b !important;
+    border: 1px solid #30334b !important;
+    border-radius: 12px !important;
+    color: #f3f1ff !important;
+    font-size: 14px !important;
+    line-height: 1.8 !important;
+    padding: 15px !important;
+}
+
+#prompt-input textarea:focus {
+    border-color: #8b5cf6 !important;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.12) !important;
+}
+
+#prompt-input label,
+#result-panel label {
+    color: #d9d7ee !important;
+    font-size: 12px !important;
+    font-weight: 650 !important;
+}
+
+#sample-title {
+    color: #969ab6;
+    font-size: 10px;
+    font-weight: 750;
+    letter-spacing: 1px;
+    margin: 22px 0 10px;
+}
+
+.sample-btn {
+    border: 1px solid #30334b !important;
+    background: #191d30 !important;
+    color: #d9d7f2 !important;
+    border-radius: 10px !important;
+    font-size: 11px !important;
+    transition: all 0.2s ease !important;
+}
+
+.sample-btn:hover {
+    background: #282044 !important;
+    border-color: #8061dc !important;
+    transform: translateY(-1px);
+}
+
+#generate-btn {
+    background: linear-gradient(110deg, #8b5cf6, #673de0) !important;
+    border: 1px solid rgba(190, 165, 255, 0.30) !important;
+    color: white !important;
+    border-radius: 11px !important;
+    font-weight: 750 !important;
+    box-shadow: 0 7px 24px rgba(111, 66, 220, 0.22);
+    transition: all 0.2s ease !important;
+}
+
+#generate-btn:hover {
+    filter: brightness(1.12);
+    transform: translateY(-1px);
+}
+
+#clear-btn,
+#copy-btn {
+    background: #202438 !important;
+    color: #e3e1f6 !important;
+    border: 1px solid #343850 !important;
+    border-radius: 11px !important;
+    font-weight: 650 !important;
+}
+
+#clear-btn:hover,
+#copy-btn:hover {
+    background: #2b3048 !important;
+}
+
+.helper-text {
+    color: #858aa8;
+    font-size: 10px;
+    line-height: 1.7;
+    margin-top: 15px;
+}
+
+#response-scroll {
+    max-height: calc(100vh - 285px);
+    min-height: 280px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 8px 12px 8px 2px;
+    scrollbar-width: thin;
+    scrollbar-color: #554982 transparent;
+    overscroll-behavior: contain;
+    border-top: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
 }
 
-#result-panel .prose strong {
-    color: #c8baff !important;
+#response-scroll::-webkit-scrollbar {
+    width: 6px;
 }
 
-#result-panel .prose a {
-    color: #a99aff !important;
+#response-scroll::-webkit-scrollbar-thumb {
+    background: #554982;
+    border-radius: 99px;
 }
 
-#result-panel .prose code {
-    color: #d8caff;
-    background: rgba(157,123,255,0.1);
-    border-radius: 5px;
-    padding: 2px 5px;
+#response-scroll .prose {
+    color: #e1e3f2 !important;
+    font-size: 13px;
+    line-height: 1.9;
+    overflow-wrap: anywhere;
 }
 
-#result-panel .prose table {
+#response-scroll .prose h1,
+#response-scroll .prose h2,
+#response-scroll .prose h3 {
+    color: #f4efff !important;
+    letter-spacing: -0.4px;
+    line-height: 1.45;
+    margin-top: 1.4em;
+}
+
+#response-scroll .prose h1 {
+    font-size: 25px;
+}
+
+#response-scroll .prose h2 {
+    font-size: 20px;
+}
+
+#response-scroll .prose h3 {
+    font-size: 16px;
+}
+
+#response-scroll .prose strong {
+    color: #d0bdff !important;
+}
+
+#response-scroll .prose a {
+    color: #b7a3ff !important;
+}
+
+#response-scroll .prose table {
     display: block;
-    max-width: 100%;
+    width: 100%;
     overflow-x: auto;
+    border-collapse: collapse;
+    font-size: 12px;
 }
 
-#result-panel .prose th,
-#result-panel .prose td {
-    border-color: var(--border) !important;
-    padding: 9px 12px;
+#response-scroll .prose th {
+    background: #201d35;
+    color: #d9caff;
 }
 
-.output-note {
-    margin-top: 18px;
-    padding-top: 13px;
-    border-top: 1px solid var(--border);
-    color: #737e98;
+#response-scroll .prose th,
+#response-scroll .prose td {
+    border: 1px solid #34334b;
+    padding: 10px 12px;
+}
+
+#response-scroll .prose blockquote {
+    border-left-color: #8b5cf6;
+    background: rgba(139, 92, 246, 0.06);
+    padding: 10px 15px;
+    border-radius: 0 8px 8px 0;
+}
+
+.response-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.response-caption {
+    color: var(--muted);
     font-size: 11px;
-    line-height: 1.7;
 }
 
-.footer {
-    margin-top: 28px;
-    padding: 20px 10px;
-    border-top: 1px solid var(--border);
+#footer-note {
     text-align: center;
-    color: #727c95;
-    font-size: 11px;
+    color: #777c98;
+    font-size: 10px;
+    padding: 26px 10px 0;
     line-height: 1.8;
 }
 
-.footer strong {
-    color: #b8a8ff;
-}
-
-@media (max-width: 700px) {
+@media (max-width: 760px) {
     #app-shell {
-        padding: 10px 10px 20px;
+        padding: 12px 12px 26px;
     }
 
-    .topbar {
-        margin-bottom: 30px;
+    #topbar {
         padding: 12px;
+        margin-bottom: 18px;
     }
 
-    .hero {
-        margin-bottom: 26px;
+    .hero-title {
+        letter-spacing: -1.2px;
     }
 
-    .hero h1 {
-        letter-spacing: -1.4px;
+    #workspace {
+        gap: 16px !important;
     }
 
-    .panel {
-        padding: 16px !important;
-    }
-
-    #prompt-box textarea {
-        min-height: 150px !important;
+    #prompt-panel {
+        position: static !important;
+        max-height: none;
+        overflow: visible;
+        padding: 17px !important;
     }
 
     #result-panel {
-        min-height: 280px;
+        padding: 17px !important;
     }
 
-    .status-pill {
-        font-size: 10px;
-        padding: 7px 8px;
+    #response-scroll {
+        max-height: 65vh;
+        min-height: 220px;
+    }
+
+    #prompt-input textarea {
+        min-height: 140px !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        transition: none !important;
+        animation: none !important;
     }
 }
 """
 
 
-# -------------------- UI --------------------
+# =========================
+# GRADIO APPLICATION
+# =========================
 
 with gr.Blocks(
+    title="AI Studio | Smart Writing Assistant",
     theme=gr.themes.Base(
         primary_hue="violet",
-        secondary_hue="blue",
+        secondary_hue="slate",
         neutral_hue="slate",
     ),
     css=CSS,
-    title="AI Text Generator | Premium AI Writer",
 ) as demo:
 
-    with gr.Column(elem_id="app-shell", elem_classes=["app-shell"]):
+    with gr.Column(elem_id="app-shell"):
 
-        gr.HTML("""
-        <div class="topbar">
-            <div class="brand">
-                <div class="brand-icon">✦</div>
-                <div>
-                    AI Studio
-                    <span class="brand-sub">YOUR CREATIVE WORKSPACE</span>
+        # Header
+        gr.HTML(
+            """
+            <header id="topbar">
+                <div class="brand">
+                    <div class="brand-icon">✦</div>
+                    <div>
+                        <div class="brand-name">AI Studio</div>
+                        <div class="brand-caption">
+                            YOUR CREATIVE WORKSPACE
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="status-pill">● AI POWERED</div>
-        </div>
+                <div class="status-pill">✦ AI POWERED</div>
+            </header>
+            """
+        )
 
-        <div class="hero">
-            <div class="eyebrow">✦ YOUR IDEAS, AMPLIFIED BY AI</div>
-            <h1>Turn ideas into<br>
-            <span class="gradient-text">extraordinary words.</span></h1>
-            <p>
-                Your intelligent writing companion for stories, content,
-                creative ideas, and everyday writing — in Bengali, English,
-                and more.
-            </p>
-            <div class="feature-row">
-                <span class="feature">✦ Smart Writing</span>
-                <span class="feature">◈ Multiple Languages</span>
-                <span class="feature">⚡ Powered by Groq</span>
-            </div>
-        </div>
-        """)
-
-        with gr.Row(equal_height=False):
-
-            # LEFT: Prompt editor
-            with gr.Column(scale=5, elem_classes=["panel"]):
-
-                gr.HTML("""
-                <div class="panel-heading">
-                    <h3>✍️ Create something amazing</h3>
-                    <p>Describe what you want the AI to write.</p>
+        # Hero section
+        gr.HTML(
+            """
+            <section id="hero">
+                <div class="hero-badge">
+                    ✦ YOUR IDEAS, AMPLIFIED BY AI
                 </div>
-                <div class="field-label">YOUR PROMPT</div>
-                """)
 
-                prompt = gr.Textbox(
-                    label=None,
+                <h1 class="hero-title">
+                    Turn ideas into<br>
+                    <span class="hero-gradient">
+                        extraordinary words.
+                    </span>
+                </h1>
+
+                <p class="hero-subtitle">
+                    Your intelligent writing companion for stories,
+                    content, creative ideas, and everyday writing
+                    in Bengali, English, and more.
+                </p>
+
+                <div class="feature-row">
+                    <span class="feature-chip">✧ Smart Writing</span>
+                    <span class="feature-chip">✧ Multiple Languages</span>
+                    <span class="feature-chip">⚡ Powered by Groq</span>
+                </div>
+            </section>
+            """
+        )
+
+        # Main workspace
+        with gr.Row(elem_id="workspace"):
+
+            # LEFT: Sticky prompt panel
+            with gr.Column(
+                scale=5,
+                min_width=300,
+                elem_id="prompt-panel",
+            ):
+                gr.HTML(
+                    """
+                    <div class="section-eyebrow">
+                        ✦ CREATE SOMETHING AMAZING
+                    </div>
+                    <h2 class="section-title">
+                        What shall we write?
+                    </h2>
+                    <div class="section-description">
+                        Describe what you want the AI to create.
+                        Be specific for better results.
+                    </div>
+                    """
+                )
+
+                prompt_input = gr.Textbox(
+                    label="YOUR PROMPT",
                     placeholder=(
-                        "Example: বাংলায় দুর্গাপুজোর ইতিহাস ও "
-                        "সংস্কৃতি সম্পর্কে একটি সুন্দর লেখা তৈরি করো..."
+                        "উদাহরণ: বাংলায় দুর্গাপুজোর ইতিহাস "
+                        "ও সংস্কৃতি সম্পর্কে লেখো..."
                     ),
                     lines=6,
                     max_lines=12,
-                    elem_id="prompt-box",
-                    show_label=False,
-                    container=False,
+                    elem_id="prompt-input",
                 )
 
                 gr.HTML(
-                    '<div class="suggestions-label">'
-                    'NEED INSPIRATION? TRY A PROMPT</div>'
+                    '<div id="sample-title">'
+                    'NEED INSPIRATION? TRY A PROMPT'
+                    '</div>'
                 )
 
                 with gr.Row():
                     story_btn = gr.Button(
-                        "📖 Short Story",
-                        size="sm",
-                        elem_classes=["suggestion-btn"],
+                        "✦ Short Story",
+                        elem_classes=["sample-btn"],
                     )
                     blog_btn = gr.Button(
-                        "✍️ Blog Post",
-                        size="sm",
-                        elem_classes=["suggestion-btn"],
+                        "✦ Blog Post",
+                        elem_classes=["sample-btn"],
                     )
 
                 with gr.Row():
                     social_btn = gr.Button(
-                        "📱 Social Caption",
-                        size="sm",
-                        elem_classes=["suggestion-btn"],
+                        "✦ Social Caption",
+                        elem_classes=["sample-btn"],
                     )
-                    bengali_btn = gr.Button(
-                        "বাংলা লেখা",
-                        size="sm",
-                        elem_classes=["suggestion-btn"],
+                    creative_btn = gr.Button(
+                        "✦ Creative Writing",
+                        elem_classes=["sample-btn"],
                     )
-
-                gr.HTML("<div style='height:20px'></div>")
 
                 with gr.Row():
                     clear_btn = gr.Button(
-                        "↺  Clear",
+                        "↺ Clear",
                         elem_id="clear-btn",
                         scale=1,
                     )
                     generate_btn = gr.Button(
-                        "✦  Generate Text",
-                        variant="primary",
+                        "✦ Generate Text",
                         elem_id="generate-btn",
+                        variant="primary",
                         scale=2,
                     )
 
-                gr.HTML("""
-                <div class="output-note">
-                    ✦ Better prompts create better results.
-                    Review AI-generated content before publishing.
-                </div>
-                """)
-
-            # RIGHT: AI output
-            with gr.Column(
-                scale=6,
-                elem_classes=["panel"],
-                elem_id="result-panel",
-            ):
-
-                gr.HTML("""
-                <div class="panel-heading">
-                    <h3>✦ Your AI creation</h3>
-                    <p>Your generated content will appear here.</p>
-                </div>
-                """)
-
-                output = gr.Markdown(
-                    value=(
-                        "<div style='text-align:center;"
-                        "padding:65px 10px;color:#8791aa;'>"
-                        "<div style='font-size:42px;margin-bottom:15px;'>✧</div>"
-                        "<strong style='color:#c5b8ff;'>"
-                        "Your next great idea starts here</strong>"
-                        "<p style='margin-top:10px;font-size:13px;'>"
-                        "Enter a prompt and click Generate Text to begin."
-                        "</p></div>"
-                    ),
-                    label=None,
+                gr.HTML(
+                    """
+                    <div class="helper-text">
+                        ✧ Better prompts create better results.
+                        Review AI-generated content before publishing.
+                    </div>
+                    """
                 )
 
-                gr.HTML("""
-                <div class="output-note">
-                    ✧ AI-generated content · Powered by Groq
-                </div>
-                """)
+            # RIGHT: Independent response panel
+            with gr.Column(
+                scale=7,
+                min_width=320,
+                elem_id="result-panel",
+            ):
+                gr.HTML(
+                    """
+                    <div class="section-eyebrow">
+                        ✧ YOUR AI CREATION
+                    </div>
+                    <h2 class="section-title">
+                        Your words, beautifully crafted.
+                    </h2>
+                    <div class="section-description">
+                        Your generated content will appear here.
+                        Long answers scroll inside this panel.
+                    </div>
+                    <div class="response-toolbar">
+                        <span class="response-caption">
+                            MARKDOWN SUPPORTED · BENGALI · ENGLISH
+                        </span>
+                    </div>
+                    """
+                )
 
-        gr.HTML("""
-        <div class="footer">
-            Crafted with <strong>✦ AI Studio</strong><br>
-            Create freely. Think bigger. Write better.
-        </div>
-        """)
+                with gr.Column(elem_id="response-scroll"):
+                    output = gr.Markdown(
+                        value=(
+                            "### Your next great idea starts here ✨\n\n"
+                            "Enter a prompt on the left and click "
+                            "**Generate Text**.\n\n"
+                            "Your AI-generated story, blog post, "
+                            "caption, or detailed explanation will "
+                            "appear in this panel."
+                        ),
+                        elem_id="response-content",
+                    )
 
-    # Generate actions
+                with gr.Row():
+                    copy_btn = gr.Button(
+                        "⧉ Copy Response",
+                        elem_id="copy-btn",
+                    )
+
+                    download_btn = gr.DownloadButton(
+                        "↓ Download TXT",
+                        variant="secondary",
+                    )
+
+        gr.HTML(
+            """
+            <div id="footer-note">
+                ✦ AI-generated content · Powered by Groq<br>
+                Crafted with care by AI Studio
+            </div>
+            """
+        )
+
+    # =========================
+    # EVENT HANDLERS
+    # =========================
+
     generate_btn.click(
         fn=generate_text,
-        inputs=prompt,
+        inputs=prompt_input,
         outputs=output,
+        show_progress="full",
     )
 
-    prompt.submit(
+    prompt_input.submit(
         fn=generate_text,
-        inputs=prompt,
+        inputs=prompt_input,
         outputs=output,
+        show_progress="full",
     )
 
-    # Clear both prompt and output
-    clear_btn.click(
-        fn=lambda: ("", ""),
-        inputs=None,
-        outputs=[prompt, output],
-    )
-
-    # Prompt suggestion actions
     story_btn.click(
-        fn=lambda: (
-            "বাংলায় সুন্দরবনের একটি বাঘকে নিয়ে "
-            "একটি আকর্ষণীয় ছোট গল্প লেখো।"
-        ),
-        inputs=None,
-        outputs=prompt,
+        fn=lambda: sample_prompt("story"),
+        outputs=prompt_input,
     )
 
     blog_btn.click(
-        fn=lambda: (
-            "Write a well-structured blog post about "
-            "how AI can help small businesses grow."
-        ),
-        inputs=None,
-        outputs=prompt,
+        fn=lambda: sample_prompt("blog"),
+        outputs=prompt_input,
     )
 
     social_btn.click(
-        fn=lambda: (
-            "Write 5 engaging Bengali Facebook captions "
-            "for a local business."
-        ),
-        inputs=None,
-        outputs=prompt,
+        fn=lambda: sample_prompt("social"),
+        outputs=prompt_input,
     )
 
-    bengali_btn.click(
-        fn=lambda: (
-            "বাংলার সংস্কৃতি, ঐতিহ্য ও উৎসব নিয়ে "
-            "সহজ ভাষায় একটি সুন্দর লেখা তৈরি করো।"
-        ),
-        inputs=None,
-        outputs=prompt,
+    creative_btn.click(
+        fn=lambda: sample_prompt("creative"),
+        outputs=prompt_input,
     )
+
+    clear_btn.click(
+        fn=clear_all,
+        outputs=[prompt_input, output],
+    )
+
+    copy_btn.click(
+        fn=None,
+        inputs=output,
+        js="""
+        async (text) => {
+            const content = String(text || "");
+            try {
+                await navigator.clipboard.writeText(content);
+            } catch (error) {
+                console.error("Copy failed:", error);
+            }
+        }
+        """,
+    )
+
+    download_btn.click(
+        fn=lambda text: (
+            _write_download_file(text)
+        ),
+        inputs=output,
+        outputs=download_btn,
+    )
+
+
+# =========================
+# DOWNLOAD HELPER
+# =========================
+
+def _write_download_file(text):
+    import tempfile
+
+    fd, path = tempfile.mkstemp(
+        prefix="ai_studio_",
+        suffix=".txt",
+        text=True,
+    )
+
+    with os.fdopen(fd, "w", encoding="utf-8") as file:
+        file.write(text or "")
+
+    return path
 
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 7860))
-
-    demo.queue().launch(
-        server_name="0.0.0.0",
-        server_port=port,
-    )
+    demo.launch()
