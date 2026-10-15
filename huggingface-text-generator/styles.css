@@ -1,0 +1,501 @@
+
+/* =========================================
+   AI STUDIO — PREMIUM UI
+   ========================================= */
+
+:root {
+    --bg: #090b14;
+    --panel: #111421;
+    --border: rgba(164, 157, 207, 0.17);
+    --text: #f4f3ff;
+    --muted: #a3a8c2;
+}
+
+.gradio-container {
+    max-width: 1500px !important;
+    margin: auto !important;
+    background:
+        radial-gradient(
+            ellipse at 10% 0%,
+            rgba(104, 65, 220, 0.13),
+            transparent 40%
+        ),
+        radial-gradient(
+            ellipse at 95% 10%,
+            rgba(29, 78, 216, 0.10),
+            transparent 35%
+        ),
+        var(--bg) !important;
+    color: var(--text) !important;
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+footer {
+    display: none !important;
+}
+
+#app-shell {
+    max-width: 1380px;
+    margin: 0 auto;
+    padding: 20px 26px 36px;
+}
+
+/* =========================================
+   HEADER
+   ========================================= */
+
+#topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px 20px;
+    margin-bottom: 30px;
+    background: rgba(18, 21, 37, 0.88);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.brand-icon {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 13px;
+    background: linear-gradient(135deg, #8b5cf6, #5b4ce2);
+    color: white;
+    font-size: 23px;
+    box-shadow: 0 6px 24px rgba(124, 86, 255, 0.30);
+}
+
+.brand-name {
+    font-size: 17px;
+    font-weight: 750;
+    letter-spacing: -0.4px;
+}
+
+.brand-caption {
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: 1.1px;
+    margin-top: 3px;
+}
+
+.status-pill {
+    color: #a7f3d0;
+    background: rgba(16, 185, 129, 0.10);
+    border: 1px solid rgba(52, 211, 153, 0.20);
+    border-radius: 999px;
+    padding: 8px 12px;
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+/* =========================================
+   HERO SECTION
+   ========================================= */
+
+#hero {
+    text-align: center;
+    padding: 12px 12px 32px;
+}
+
+.hero-badge {
+    display: inline-block;
+    padding: 7px 13px;
+    margin-bottom: 15px;
+    border: 1px solid rgba(167, 139, 250, 0.25);
+    border-radius: 999px;
+    background: rgba(139, 92, 246, 0.09);
+    color: #c4b5fd;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.hero-title {
+    font-size: clamp(30px, 4.2vw, 53px);
+    font-weight: 850;
+    line-height: 1.12;
+    letter-spacing: -2px;
+    margin: 0 0 14px;
+    color: #faf9ff;
+}
+
+.hero-gradient {
+    background: linear-gradient(
+        100deg,
+        #b9a6ff,
+        #8b8bff 45%,
+        #df9cff
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.hero-subtitle {
+    max-width: 660px;
+    margin: 0 auto;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+.feature-row {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-top: 20px;
+}
+
+.feature-chip {
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.025);
+    color: #c7c9de;
+    font-size: 11px;
+}
+
+/* =========================================
+   MAIN WORKSPACE
+   ========================================= */
+
+#workspace {
+    align-items: flex-start !important;
+    gap: 22px !important;
+}
+
+/* Sticky prompt editor */
+
+#prompt-panel {
+    position: sticky !important;
+    top: 14px;
+    align-self: flex-start !important;
+    max-height: calc(100vh - 28px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: #4f4578 transparent;
+    background: rgba(17, 20, 33, 0.94);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 22px !important;
+    box-shadow: 0 18px 60px rgba(0, 0, 0, 0.16);
+}
+
+#prompt-panel::-webkit-scrollbar {
+    width: 5px;
+}
+
+#prompt-panel::-webkit-scrollbar-thumb {
+    background: #4f4578;
+    border-radius: 99px;
+}
+
+/* Output panel */
+
+#result-panel {
+    min-width: 0;
+    align-self: flex-start !important;
+    background: rgba(17, 20, 33, 0.80);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 22px !important;
+}
+
+.section-eyebrow {
+    color: #b9a4ff;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 9px;
+}
+
+.section-title {
+    font-size: 21px;
+    font-weight: 750;
+    letter-spacing: -0.6px;
+    margin: 0 0 8px;
+    color: #f5f3ff;
+}
+
+.section-description {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.7;
+    margin-bottom: 22px;
+}
+
+/* =========================================
+   PROMPT INPUT
+   ========================================= */
+
+#prompt-input textarea {
+    min-height: 180px !important;
+    background: #0c0f1b !important;
+    border: 1px solid #30334b !important;
+    border-radius: 12px !important;
+    color: #f3f1ff !important;
+    font-size: 14px !important;
+    line-height: 1.8 !important;
+    padding: 15px !important;
+}
+
+#prompt-input textarea:focus {
+    border-color: #8b5cf6 !important;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.12) !important;
+}
+
+#prompt-input label,
+#result-panel label {
+    color: #d9d7ee !important;
+    font-size: 12px !important;
+    font-weight: 650 !important;
+}
+
+#sample-title {
+    color: #969ab6;
+    font-size: 10px;
+    font-weight: 750;
+    letter-spacing: 1px;
+    margin: 22px 0 10px;
+}
+
+/* =========================================
+   BUTTONS
+   ========================================= */
+
+.sample-btn {
+    border: 1px solid #30334b !important;
+    background: #191d30 !important;
+    color: #d9d7f2 !important;
+    border-radius: 10px !important;
+    font-size: 11px !important;
+    transition: all 0.2s ease !important;
+}
+
+.sample-btn:hover {
+    background: #282044 !important;
+    border-color: #8061dc !important;
+    transform: translateY(-1px);
+}
+
+#generate-btn {
+    background: linear-gradient(
+        110deg,
+        #8b5cf6,
+        #673de0
+    ) !important;
+    border: 1px solid rgba(190, 165, 255, 0.30) !important;
+    color: white !important;
+    border-radius: 11px !important;
+    font-weight: 750 !important;
+    box-shadow: 0 7px 24px rgba(111, 66, 220, 0.22);
+    transition: all 0.2s ease !important;
+}
+
+#generate-btn:hover {
+    filter: brightness(1.12);
+    transform: translateY(-1px);
+}
+
+#clear-btn,
+#copy-btn,
+#download-btn {
+    background: #202438 !important;
+    color: #e3e1f6 !important;
+    border: 1px solid #343850 !important;
+    border-radius: 11px !important;
+    font-weight: 650 !important;
+}
+
+#clear-btn:hover,
+#copy-btn:hover,
+#download-btn:hover {
+    background: #2b3048 !important;
+}
+
+.helper-text {
+    color: #858aa8;
+    font-size: 10px;
+    line-height: 1.7;
+    margin-top: 15px;
+}
+
+/* =========================================
+   SCROLLABLE AI RESPONSE
+   ========================================= */
+
+#response-scroll {
+    max-height: calc(100vh - 285px);
+    min-height: 280px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 8px 12px 8px 2px;
+    scrollbar-width: thin;
+    scrollbar-color: #554982 transparent;
+    overscroll-behavior: contain;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+}
+
+#response-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+
+#response-scroll::-webkit-scrollbar-thumb {
+    background: #554982;
+    border-radius: 99px;
+}
+
+#response-scroll .prose {
+    color: #e1e3f2 !important;
+    font-size: 13px;
+    line-height: 1.9;
+    overflow-wrap: anywhere;
+}
+
+#response-scroll .prose h1,
+#response-scroll .prose h2,
+#response-scroll .prose h3 {
+    color: #f4efff !important;
+    letter-spacing: -0.4px;
+    line-height: 1.45;
+    margin-top: 1.4em;
+}
+
+#response-scroll .prose h1 {
+    font-size: 25px;
+}
+
+#response-scroll .prose h2 {
+    font-size: 20px;
+}
+
+#response-scroll .prose h3 {
+    font-size: 16px;
+}
+
+#response-scroll .prose strong {
+    color: #d0bdff !important;
+}
+
+#response-scroll .prose a {
+    color: #b7a3ff !important;
+}
+
+#response-scroll .prose table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+
+#response-scroll .prose th {
+    background: #201d35;
+    color: #d9caff;
+}
+
+#response-scroll .prose th,
+#response-scroll .prose td {
+    border: 1px solid #34334b;
+    padding: 10px 12px;
+}
+
+#response-scroll .prose blockquote {
+    border-left-color: #8b5cf6;
+    background: rgba(139, 92, 246, 0.06);
+    padding: 10px 15px;
+    border-radius: 0 8px 8px 0;
+}
+
+.response-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.response-caption {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+/* =========================================
+   FOOTER
+   ========================================= */
+
+#footer-note {
+    text-align: center;
+    color: #777c98;
+    font-size: 10px;
+    padding: 26px 10px 0;
+    line-height: 1.8;
+}
+
+/* =========================================
+   RESPONSIVE MOBILE LAYOUT
+   ========================================= */
+
+@media (max-width: 760px) {
+    #app-shell {
+        padding: 12px 12px 26px;
+    }
+
+    #topbar {
+        padding: 12px;
+        margin-bottom: 18px;
+    }
+
+    .hero-title {
+        letter-spacing: -1.2px;
+    }
+
+    #workspace {
+        gap: 16px !important;
+    }
+
+    #prompt-panel {
+        position: static !important;
+        max-height: none;
+        overflow: visible;
+        padding: 17px !important;
+    }
+
+    #result-panel {
+        padding: 17px !important;
+    }
+
+    #response-scroll {
+        max-height: 65vh;
+        min-height: 220px;
+    }
+
+    #prompt-input textarea {
+        min-height: 140px !important;
+    }
+}
+
+/* Respect reduced-motion preferences */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        transition: none !important;
+        animation: none !important;
+    }
+}
