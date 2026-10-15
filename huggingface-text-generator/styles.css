@@ -12,8 +12,6 @@
 }
 
 .gradio-container {
-    max-width: 1500px !important;
-    margin: auto !important;
     background:
         radial-gradient(
             ellipse at 10% 0%,
